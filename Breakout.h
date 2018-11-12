@@ -6,8 +6,6 @@
 #define RATE 5
 #define GAMETILE "RailDefender 2: Breakout"
 
-using namespace sf;
-
 const Time dt = milliseconds(16);
 
 class Breakout

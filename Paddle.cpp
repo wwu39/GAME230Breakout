@@ -49,9 +49,9 @@ Vector2f Paddle::getPosition()
 	return shape.getPosition();
 }
 
-void Paddle::setPosition(float x, float y)
+void Paddle::setPosition(Vector2f pos)
 {
-	shape.setPosition(x, y);
+	shape.setPosition(pos);
 }
 
 void Paddle::move(float dt)

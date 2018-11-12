@@ -11,12 +11,20 @@ using namespace sf;
 
 class Brick
 {
+protected:
 	RectangleShape plane;
 	RectangleShape shield;
-	int shieldLV;
+	int strength;
 public:
 	Brick(int shieldLV, Vector2f pos);
 	~Brick();
+	void takeDamage();
 	friend class Breakout;
+};
+
+class MobileBrick :public Brick
+{
+	MobileBrick(int shieldLV, Vector2f pos) : Brick(shieldLV, pos) {};
+	~MobileBrick();
 };
 

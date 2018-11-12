@@ -33,7 +33,7 @@ public:
 
 	void draw(RenderWindow&);
 	Vector2f getPosition();
-	void setPosition(float x, float y);
+	void setPosition(Vector2f pos);
 	void move(float);
 };
 
