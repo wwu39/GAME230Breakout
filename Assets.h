@@ -10,7 +10,16 @@
 #include <SFML/OpenGL.hpp>
 #include <SFML/Main.hpp>
 
+#define SHIELD_RATE 10
+#define WHITE 0
+#define RED 1
+#define BLUE 2
+#define GREEN 3
+#define EXP_RATE 3
+
 using namespace sf;
+
+enum ExplosionStatus { NO_EXP, EXPL, BLST };
 
 class Assets
 {
@@ -25,8 +34,16 @@ public:
 	static Texture paddle_tex[38];
 	static Texture rail_tex;
 	static Texture bomb_tex[16];
+	static Texture shield[4][5];
+	static Texture sky_tex;
+	static Texture plane[16];
 	static Font font;
 	static SoundBuffer cannonfire;
+	static SoundBuffer metalhit;
+	static SoundBuffer load;
+	static SoundBuffer explosion;
+	static SoundBuffer gameover;
+	static SoundBuffer option;
 
 	static void loadAssets();
 };

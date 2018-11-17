@@ -91,6 +91,7 @@ int main()
 						loadingTextIdx = 0;
 						rc = game->run(window);
 						delete game;
+						game = nullptr;
 						if (rc == EXIT) return rc;
 						if (rc == MENU) status = MENU_STATUS::EXIT_FROM_GAME;
 					}
