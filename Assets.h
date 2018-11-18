@@ -37,6 +37,7 @@ public:
 	static Texture shield[4][5];
 	static Texture sky_tex;
 	static Texture plane[16];
+	static Texture plane_t[13];
 	static Font font;
 	static SoundBuffer cannonfire;
 	static SoundBuffer metalhit;
@@ -53,6 +54,9 @@ public:
 	static SoundBuffer menu_bg;
 	static SoundBuffer button;
 	static Sound button_press;
+	static SoundBuffer under_attack;
+	static SoundBuffer critical_damaged;
+	static SoundBuffer rail_repair;
 
 	static void loadAssets();
 };

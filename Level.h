@@ -24,6 +24,7 @@ class Level
 	int level_title_flashing_times = 0;
 	Sound level_bg;
 	Sound win_level;
+	int immortals = 0;
 public:
 	static int score;
 	Level(int);

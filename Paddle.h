@@ -30,6 +30,9 @@ class Paddle
 	Sound firingSound;
 	int life = 5;
 	Text lifepoint;
+	Sound rail_repair;
+	Sound under_attack;
+	Sound critical_damaged;
 
 	void animate();
 	void fire();

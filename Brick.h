@@ -52,8 +52,9 @@ protected:
 public:
 	Brick(int shieldLV, Vector2f pos);
 	~Brick();
-	void update_state(float);
-	void draw(RenderWindow&);
+	virtual void update_state(float);
+	inline virtual bool isMobile() { return false; }
+	virtual void draw(RenderWindow&);
 	BrickStatus status = ALIVE;
 	ExplosionStatus exp_status[4] = { NO_EXP };
 	friend class Level;
@@ -61,9 +62,23 @@ public:
 	friend class Breakout;
 };
 
+enum TurningStatus { NOT_TURNING, TURNING_LEFT, TURNING_RIGHT };
+
+#define TURNING_RATE 5
+
 class MobileBrick :public Brick
 {
+	Vector2f v = { 3.0f, 0.0f };
+	TurningStatus turning_status = NOT_TURNING;
+	int turning_rate = TURNING_RATE;
+	int curtnfr = 0;
+	void turnToLeft();
+	void turnToRight();
+public:
 	MobileBrick(int shieldLV, Vector2f pos) : Brick(shieldLV, pos) {};
 	~MobileBrick();
+	void update_state(float);
+	void draw(RenderWindow&);
+	inline bool isMobile() { return true; }
 };
 

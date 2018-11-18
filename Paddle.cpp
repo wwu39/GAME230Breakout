@@ -43,6 +43,9 @@ Paddle::Paddle()
 	lifepoint.setFont(Assets::font);
 	lifepoint.setCharacterSize(50);
 	lifepoint.setFillColor(Color::Green);
+	rail_repair.setBuffer(Assets::rail_repair);
+	under_attack.setBuffer(Assets::under_attack);
+	critical_damaged.setBuffer(Assets::critical_damaged);
 }
 
 
@@ -100,6 +103,7 @@ void Paddle::update_state(float dt)
 	}
 	std::ostringstream str;
 	str << life;
+	if (life == 5 || life == 4)lifepoint.setFillColor(Color::Green);
 	if (life == 3 || life == 2) lifepoint.setFillColor(Color::Yellow);
 	if (life == 1) lifepoint.setFillColor(Color::Red);
 	lifepoint.setString(str.str());

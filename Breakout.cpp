@@ -133,7 +133,7 @@ void Breakout::render_frame(RenderWindow& window)
 {
 	// draw sky
 	++rate;
-	if (rate / RATE) {
+	if (rate / SKY_RATE) {
 		sky_animate();
 		rate = 0;
 	}

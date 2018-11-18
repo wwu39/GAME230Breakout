@@ -14,6 +14,7 @@ Texture Assets::rail_tex;
 Texture Assets::bomb_tex[16];
 Texture Assets::sky_tex;
 Texture Assets::plane[16];
+Texture Assets::plane_t[13];
 Font Assets::font;
 SoundBuffer Assets::cannonfire;
 SoundBuffer Assets::metalhit;
@@ -30,6 +31,9 @@ SoundBuffer Assets::losing;
 SoundBuffer Assets::menu_bg;
 SoundBuffer Assets::button;
 Sound Assets::button_press;
+SoundBuffer Assets::under_attack;
+SoundBuffer Assets::critical_damaged;
+SoundBuffer Assets::rail_repair;
 
 Assets::Assets()
 {
@@ -94,6 +98,12 @@ void Assets::loadAssets()
 		filename << "sprites/plane 00" << (i > 9 ? "" : "0") << i << ".png";
 		plane[i].loadFromFile(filename.str());
 	}
+	for (int i = 0; i < 13; ++i) {
+		ostringstream filename;
+		filename << "sprites/plane_tl 00" << (i > 9 ? "" : "0") << i << ".png";
+		plane_t[i].loadFromFile(filename.str());
+	}
+
 
 	// load font
 	font.loadFromFile("fonts/menu.ttf");
@@ -118,4 +128,7 @@ void Assets::loadAssets()
 	menu_bg.loadFromFile("sound/menu_bg.wav");
 	button.loadFromFile("sound/button.wav");
 	button_press.setBuffer(button);
+	under_attack.loadFromFile("sound/under_attack.wav");
+	critical_damaged.loadFromFile("sound/critical_damage.wav");
+	rail_repair.loadFromFile("sound/repair.wav");
 }

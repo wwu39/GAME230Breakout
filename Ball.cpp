@@ -90,14 +90,26 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 					&& ((pos.y > brick_pos.y && pos.y - BALL_CR - BRICK_CH / 2.0f < brick_pos.y && velocity.y < 0)
 						|| (pos.y < brick_pos.y && pos.y + BALL_CR + BRICK_CH / 2.0f > brick_pos.y && velocity.y > 0))) { // hit top or bottom
 					velocity.y = -velocity.y; // flip vy
-					if (brick_list[i]->shieldLV) { // damage
+					if (brick_list[i]->shieldLV > 0) { // damage
 						brick_list[i]->exp_status[brick_list[i]->shieldLV] = EXPL;
 						brick_list[i]->expl_sound.play();
 						Assets::nullify.play();
 						brick_list[i]->expl[brick_list[i]->shieldLV].setPosition(pos);
 						--brick_list[i]->shieldLV;
 					}
+					else if (brick_list[i]->shieldLV < 0) { // invincible
+						brick_list[i]->exp_status[0] = EXPL;
+						brick_list[i]->expl_sound.play();
+						Assets::nullify.play();
+						brick_list[i]->expl[0].setPosition(pos);
+					}
 					else { // kill
+						if (brick_list[i]->isMobile()) {
+							if (paddle.life < 5) {
+								++paddle.life;
+								paddle.rail_repair.play();
+							}
+						}
 						brick_list[i]->status = DYING;
 						brick_list[i]->exp_status[0] = EXPL;
 						expl_sound.play();
@@ -109,14 +121,26 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 					&& ((pos.x < brick_pos.x && pos.x + BALL_CR + BRICK_CW / 2.0f > brick_pos.x && velocity.x > 0)
 						|| (pos.x > brick_pos.x && pos.x - BALL_CR - BRICK_CW / 2.0f < brick_pos.x && velocity.x < 0))) { // hit left or right
 					velocity.x = -velocity.x; // flip vx
-					if (brick_list[i]->shieldLV) { // damage
+					if (brick_list[i]->shieldLV > 0) { // damage
 						brick_list[i]->exp_status[brick_list[i]->shieldLV] = EXPL;
 						brick_list[i]->expl_sound.play();
 						Assets::nullify.play();
 						brick_list[i]->expl[brick_list[i]->shieldLV].setPosition(pos);
 						--brick_list[i]->shieldLV;
 					}
+					else if (brick_list[i]->shieldLV < 0) { // invincible
+						brick_list[i]->exp_status[0] = EXPL;
+						brick_list[i]->expl_sound.play();
+						Assets::nullify.play();
+						brick_list[i]->expl[0].setPosition(pos);
+					}
 					else { // kill
+						if (brick_list[i]->isMobile()) {
+							if (paddle.life < 5) {
+								++paddle.life;
+								paddle.rail_repair.play();
+							}
+						}
 						brick_list[i]->status = DYING;
 						brick_list[i]->exp_status[0] = EXPL;
 						expl_sound.play();
@@ -150,6 +174,8 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 			load_sound.play();
 			paddle.status = START;
 			--paddle.life;
+			if (paddle.life > 2) paddle.under_attack.play();
+			else paddle.critical_damaged.play();
 		}
 
 		// update position

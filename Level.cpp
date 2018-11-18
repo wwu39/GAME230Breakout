@@ -9,9 +9,11 @@ Level::Level(int lv)
 {
 	int superlv = lv / 5 + 1;
 	int sublv = lv % 5;
-	if (sublv == 0) sublv = 5;
+	if (sublv == 0) {
+		sublv = 5;
+		--superlv;
+	}
 	time_remain = 110 + sublv * 10;
-	if (time_remain < 60) time_remain = 60;
 	for (int j = 0; j < sublv; ++j) for (int i = 0; i < 5; ++i) {
 		int shield;
 		int chance = rand() % 100;
@@ -19,8 +21,14 @@ Level::Level(int lv)
 		else if (chance >= 50 && chance < 80) shield = 1;
 		else if (chance >= 80 && chance < 90) shield = 2;
 		else shield = 3;
+		// if (i == 2 && j == sublv / 2) shield = -1;
 		brick_list.push_back(shared_ptr<Brick>(new Brick(shield, { float(120 + i * 140), float(100 + 70 * j) })));
 	}
+	if (sublv < 3) {
+		brick_list.push_back(shared_ptr<Brick>(new MobileBrick(-1, { float(120), float(100 + 70 * sublv) })));
+		brick_list.push_back(shared_ptr<Brick>(new MobileBrick(sublv, { float(300), float(170 + 70 * sublv) })));
+		++immortals;
+	} else brick_list.push_back(shared_ptr<Brick>(new MobileBrick(3, { float(120), float(100 + 70 * sublv) })));
 	level_bg.setBuffer(Assets::level_bg[sublv - 1]);
 	win_level.setBuffer(Assets::win_level);
 	level_title.setFont(Assets::font);
@@ -61,7 +69,7 @@ Level::~Level()
 
 void Level::update_state(float dt) {
 	if (status == NOT_CLEAR) {
-		if (brick_list.empty()) {
+		if (brick_list.size() == immortals) {
 			status = READY_TO_CLEAR;
 			if (level_bg.getStatus() == Sound::Playing) level_bg.stop();
 			win_level.play();

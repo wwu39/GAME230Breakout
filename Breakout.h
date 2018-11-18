@@ -2,6 +2,7 @@
 #include "Ball.h"
 #include "Level.h"
 
+#define SKY_RATE 1
 #define RATE 5
 #define GAMETILE "RailDefender 2: Breakout"
 

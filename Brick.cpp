@@ -10,7 +10,7 @@ Brick::Brick(int shieldLV, Vector2f pos)
 	plane.setPosition(pos);
 	shield.setSize({ 130, 130 });
 	shield.setOrigin({ 65, 65 });
-	shield.setTexture(&Assets::shield[shieldLV][0]);
+	shield.setTexture(&Assets::shield[shieldLV > 0 ? shieldLV : 0][0]);
 	shield.setPosition(pos);
 	RAND_IDLE_DELAY = (32 + rand() % 16) * IDLE_RATE;
 	woddle_up = 1 + rand() % 5;
@@ -25,7 +25,7 @@ Brick::Brick(int shieldLV, Vector2f pos)
 
 void Brick::shield_flash()
 {
-	shield.setTexture(&Assets::shield[shieldLV][curshfr]);
+	shield.setTexture(&Assets::shield[shieldLV > 0 ? shieldLV : 0][curshfr]);
 	if (!shield_reverse) ++curshfr; else --curshfr;
 	if (curshfr == 4) shield_reverse = true;
 	if (curshfr == 0) shield_reverse = false;
@@ -83,6 +83,40 @@ void Brick::update_state(float)
 	}
 }
 
+void MobileBrick::update_state(float)
+{
+	if (status == ALIVE) {
+		++woddle_rate;
+		if (woddle_rate / WODDLE_RATE) {
+			plane.setOrigin({ BRICK_W / 2.0f, BRICK_H / 2.0f + float(woddle_y) });
+			if (!woddle_reverse) ++woddle_y; else --woddle_y;
+			if (woddle_y == woddle_up) {
+				woddle_reverse = true;
+				woddle_up = 1 + rand() % 5;
+			}
+			if (woddle_y == woddle_down) {
+				woddle_reverse = false;
+				woddle_down = rand() % 5 - 5;
+			}
+			woddle_rate = 0;
+		}
+		if (turning_status == NOT_TURNING) {
+			Vector2f pos = plane.getPosition();
+			if (pos.x < 70.0f && v.x < 0) {
+				v.x = -v.x;
+				turning_status = TURNING_RIGHT;
+			}
+			if (pos.x > 730.0f && v.x > 0) {
+				v.x = -v.x;
+				turning_status = TURNING_LEFT;
+			}
+			pos += v;
+			plane.setPosition(pos);
+			shield.setPosition(pos);
+		}
+	}
+}
+
 void Brick::draw(RenderWindow& window)
 {
 	++shield_rate;
@@ -116,6 +150,33 @@ void Brick::draw(RenderWindow& window)
 	}
 }
 
+void MobileBrick::draw(RenderWindow& window)
+{
+	++shield_rate;
+	if (shield_rate / SHIELD_RATE) {
+		shield_flash();
+		shield_rate = 0;
+	}
+	if (turning_status != NOT_TURNING) {
+		++turning_rate;
+		if (turning_rate / TURNING_RATE) {
+			if (turning_status == TURNING_LEFT) turnToLeft();
+			if (turning_status == TURNING_RIGHT) turnToRight();
+			turning_rate = 0;
+		}
+	}
+	if (status == ALIVE) window.draw(plane);
+	if (shieldLV) window.draw(shield);
+	for (int i = 0; i < 4; ++i) {
+		++exp_rate[i];
+		if (exp_rate[i] / EXP_RATE) {
+			exp_animate();
+			exp_rate[i] = 0;
+		}
+		if (exp_status[i] == EXPL) window.draw(expl[i]);
+	}
+}
+
 void Brick::idle()
 {
 	plane.setTexture(&Assets::plane[curidfr]);
@@ -124,6 +185,28 @@ void Brick::idle()
 		idling = false;
 		curidfr = 0;
 		plane.setTexture(&Assets::plane[curidfr]);
+	}
+}
+
+void MobileBrick::turnToLeft()
+{
+	plane.setTexture(&Assets::plane_t[curtnfr]);
+	++curtnfr;
+	if (curtnfr == 13) {
+		plane.setTexture(&Assets::plane_t[12]);
+		curtnfr = 12;
+		turning_status = NOT_TURNING;
+	}
+}
+
+void MobileBrick::turnToRight()
+{
+	plane.setTexture(&Assets::plane_t[curtnfr]);
+	--curtnfr;
+	if (curtnfr == -1) {
+		plane.setTexture(&Assets::plane_t[0]);
+		curtnfr = 0;
+		turning_status = NOT_TURNING;
 	}
 }
 
