@@ -21,6 +21,15 @@ SoundBuffer Assets::load;
 SoundBuffer Assets::explosion;
 SoundBuffer Assets::gameover;
 SoundBuffer Assets::option;
+SoundBuffer Assets::title;
+SoundBuffer Assets::shield_nullify;
+Sound Assets::nullify;
+SoundBuffer Assets::win_level;
+SoundBuffer Assets::level_bg[5];
+SoundBuffer Assets::losing;
+SoundBuffer Assets::menu_bg;
+SoundBuffer Assets::button;
+Sound Assets::button_press;
 
 Assets::Assets()
 {
@@ -96,4 +105,17 @@ void Assets::loadAssets()
 	explosion.loadFromFile("sound/explosion.wav");
 	gameover.loadFromFile("sound/gameover.wav");
 	option.loadFromFile("sound/option.wav");
+	title.loadFromFile("sound/title.wav");
+	shield_nullify.loadFromFile("sound/nullify.wav");
+	nullify.setBuffer(shield_nullify);
+	win_level.loadFromFile("sound/win_level.wav");
+	for (int i = 0; i < 5; ++i) {
+		ostringstream filename;
+		filename << "sound/b0" << i + 1 << ".wav";
+		level_bg[i].loadFromFile(filename.str());
+	}
+	losing.loadFromFile("sound/losing_bg.wav");
+	menu_bg.loadFromFile("sound/menu_bg.wav");
+	button.loadFromFile("sound/button.wav");
+	button_press.setBuffer(button);
 }

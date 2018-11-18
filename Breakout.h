@@ -33,6 +33,7 @@ class Breakout
 	Text fin_options;
 	CircleShape fin_cursor;
 	Sound fin_option_switch;
+	Sound losing_bg;
 public:
 	Breakout();
 	~Breakout();

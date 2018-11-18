@@ -11,7 +11,6 @@ Breakout::Breakout()
 	rail.setPosition(400, 564);
 	sky.setSize({ 800, 600 });
 	sky.setTexture(&Assets::sky_tex);
-	curLevel = new Level(LV);
 	for (int i = 0; i < 8; ++i) {
 		explosions[i].setSize({ 120, 134 });
 		explosions[i].setOrigin({ 60, 67 });
@@ -39,11 +38,16 @@ Breakout::Breakout()
 	fin_cursor.setTexture(&Assets::bomb_tex[14]);
 	fin_cursor.setPosition({ 275, 370 });
 	fin_option_switch.setBuffer(Assets::option);
+	Level::score = 0;
+	curLevel = new Level(LV);
+	Ball::speed_mult = 1.0;
+	losing_bg.setBuffer(Assets::losing);
 }
 
 
 Breakout::~Breakout()
 {
+	if (curLevel) delete curLevel;
 }
 
 void Breakout::sky_animate()
@@ -55,6 +59,7 @@ void Breakout::sky_animate()
 int Breakout::run(RenderWindow& window)
 {
 	Clock clock;
+	clock.restart();
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event))
@@ -68,6 +73,7 @@ int Breakout::run(RenderWindow& window)
 			float dt = clock.restart().asSeconds();
 			update_state(dt);
 			// exit condition
+			if (status == ENDING || status == END) if (losing_bg.getStatus() != Sound::Playing) losing_bg.play();
 			if (status == END) {
 				Vector2f pos = fin_cursor.getPosition();
 				if (Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up))
@@ -82,8 +88,15 @@ int Breakout::run(RenderWindow& window)
 					}
 				fin_cursor.setPosition(pos);
 				if (Keyboard::isKeyPressed(Keyboard::Enter) || Keyboard::isKeyPressed(Keyboard::Space)) {
-					if (pos.y == 295.0f) return MENU; // menu
-					if (pos.y == 370.0f) return EXIT; // exit
+					Assets::button_press.play();
+					if (pos.y == 295.0f) {
+						if (losing_bg.getStatus() == Sound::Playing) losing_bg.stop();
+						return MENU; // menu
+					}
+					if (pos.y == 370.0f) {
+						if (losing_bg.getStatus() == Sound::Playing) losing_bg.stop();
+						return EXIT; // exit
+					}
 				}
 			}
 			render_frame(window);
@@ -95,17 +108,22 @@ int Breakout::run(RenderWindow& window)
 
 void Breakout::update_state(float dt)
 {
+	if (curLevel->status == CLEAR) {
+		delete curLevel;
+		curLevel = new Level(++LV);
+		player.status = START;
+		Ball::speed_mult += 0.2f;
+		bullet.status = UNLAUNCHED;
+	}
+
+	if ((curLevel->status == PREPARE || curLevel->status == NOT_CLEAR) && !player.isDead())
+		if (curLevel->level_bg.getStatus() != Sound::Playing) curLevel->level_bg.play();
 	curLevel->update_state(dt);
 	if (status == RUNNING) {
-		player.update_state(dt);
-		if (curLevel->clear()) {
-			delete curLevel;
-			curLevel = nullptr;
-			++LV;
-			curLevel = new Level(LV);
-		}
-		bullet.update_state(dt, player, curLevel->brick_list);
+		if (curLevel->status == NOT_CLEAR) player.update_state(dt);
+		if (curLevel->status == NOT_CLEAR) bullet.update_state(dt, player, curLevel->brick_list);
 		if (player.isDead()) {
+			if (curLevel->level_bg.getStatus() == Sound::Playing) curLevel->level_bg.stop();
 			status = ENDING;
 		}
 	}
@@ -127,7 +145,7 @@ void Breakout::render_frame(RenderWindow& window)
 	// draw everything else
 	if (status != END) {
 		window.draw(rail);
-		bullet.drawBullet(window);
+		if (curLevel->status == NOT_CLEAR) bullet.drawBullet(window);
 		player.draw(window);
 		if (status != ENDING) bullet.drawExplosion(window);
 	}

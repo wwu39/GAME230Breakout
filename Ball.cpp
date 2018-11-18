@@ -5,6 +5,8 @@
 
 #define PI 3.14159265358979323846f
 
+float Ball::speed_mult = 1.0;
+
 Ball::Ball()
 {
 	bomb.setRadius(BALL_R);
@@ -59,7 +61,7 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 	if (status == UNLAUNCHED) {
 		if (paddle.status != START) {
 			float angle = paddle.curmvfr / 18.0f * PI;
-			velocity = { -BALL_SPEED * cosf(angle), -BALL_SPEED * sinf(angle) };
+			velocity = { -BALL_SPEED * speed_mult * cosf(angle), -BALL_SPEED * speed_mult * sinf(angle) };
 			status = BOMB;
 			active = bomb;
 			setPosition(paddle.getPosition());
@@ -88,14 +90,18 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 					&& ((pos.y > brick_pos.y && pos.y - BALL_CR - BRICK_CH / 2.0f < brick_pos.y && velocity.y < 0)
 						|| (pos.y < brick_pos.y && pos.y + BALL_CR + BRICK_CH / 2.0f > brick_pos.y && velocity.y > 0))) { // hit top or bottom
 					velocity.y = -velocity.y; // flip vy
-					if (brick_list[i]->shieldLV) {
+					if (brick_list[i]->shieldLV) { // damage
+						brick_list[i]->exp_status[brick_list[i]->shieldLV] = EXPL;
+						brick_list[i]->expl_sound.play();
+						Assets::nullify.play();
+						brick_list[i]->expl[brick_list[i]->shieldLV].setPosition(pos);
 						--brick_list[i]->shieldLV;
 					}
-					else {
+					else { // kill
 						brick_list[i]->status = DYING;
-						brick_list[i]->exp_status = EXPL;
-						brick_list[i]->expl_sound.play();
-						brick_list[i]->expl.setPosition(brick_pos);
+						brick_list[i]->exp_status[0] = EXPL;
+						expl_sound.play();
+						brick_list[i]->expl[0].setPosition(brick_pos);
 						brick_list[i]->plane.setPosition({-100, -100});
 					}
 				}
@@ -103,14 +109,18 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 					&& ((pos.x < brick_pos.x && pos.x + BALL_CR + BRICK_CW / 2.0f > brick_pos.x && velocity.x > 0)
 						|| (pos.x > brick_pos.x && pos.x - BALL_CR - BRICK_CW / 2.0f < brick_pos.x && velocity.x < 0))) { // hit left or right
 					velocity.x = -velocity.x; // flip vx
-					if (brick_list[i]->shieldLV) {
+					if (brick_list[i]->shieldLV) { // damage
+						brick_list[i]->exp_status[brick_list[i]->shieldLV] = EXPL;
+						brick_list[i]->expl_sound.play();
+						Assets::nullify.play();
+						brick_list[i]->expl[brick_list[i]->shieldLV].setPosition(pos);
 						--brick_list[i]->shieldLV;
 					}
-					else {
+					else { // kill
 						brick_list[i]->status = DYING;
-						brick_list[i]->exp_status = EXPL;
-						brick_list[i]->expl_sound.play();
-						brick_list[i]->expl.setPosition(brick_pos);
+						brick_list[i]->exp_status[0] = EXPL;
+						expl_sound.play();
+						brick_list[i]->expl[0].setPosition(brick_pos);
 						brick_list[i]->plane.setPosition({ -100, -100 });
 					}
 				}
@@ -123,7 +133,7 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 			// velocity.y = -velocity.y;
 			// float angle = acos(-velocity.x / sqrt(velocity.x * velocity.x + velocity.y * velocity.y));
 			float angle = (pos.x - (ppos.x - PADDLE_W / 2.0f - 20)) / (PADDLE_W + 40) * PI;
-			velocity = { -BALL_SPEED * cosf(angle), -BALL_SPEED * sinf(angle) };
+			velocity = { -BALL_SPEED * speed_mult * cosf(angle), -BALL_SPEED * speed_mult * sinf(angle) };
 
 			paddle.curmvfr = int(angle * 18.0f / PI);
 			load_sound.play();

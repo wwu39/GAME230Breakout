@@ -23,6 +23,8 @@ int main()
 	Text press_any_key;
 	Text loading_text;
 	MENU_STATUS status = MENU_STATUS::NONE;
+	Sound title;
+	Sound menu_bg;
 	int rate = RATE;
 	int rate2 = 0;
 	int flashRate = 0;
@@ -52,8 +54,13 @@ int main()
 	loading_text.setPosition(200, 200);
 	loading_text.setString(loadingStr[0]);
 
+	// title sound
+	title.setBuffer(Assets::title);
+	menu_bg.setBuffer(Assets::menu_bg);
+
 	// setup window
 	window.create(VideoMode(800, 600), GAMETILE);
+	title.play();
 
 	Clock clock;
 	while (window.isOpen())
@@ -70,8 +77,13 @@ int main()
 		if (clock.getElapsedTime() > dt) { // appro 60 fps
 
 			// update state
+			if (menu_bg.getStatus() != Sound::Playing) menu_bg.play();
 			if (status == MENU_STATUS::NONE) {
-				if (Keyboard::isKeyPressed(Keyboard::Space) || Keyboard::isKeyPressed(Keyboard::Enter)) status = MENU_STATUS::LOADING;
+				if (Keyboard::isKeyPressed(Keyboard::Space)) {
+					if (menu_bg.getStatus() == Sound::Playing) menu_bg.stop();
+					Assets::button_press.play();
+					status = MENU_STATUS::LOADING;
+				}
 			}
 
 			if (status == MENU_STATUS::EXIT_FROM_GAME) {
@@ -89,11 +101,15 @@ int main()
 					++loadingTextIdx;
 					if (loadingTextIdx == 4) {
 						loadingTextIdx = 0;
+						if (menu_bg.getStatus() == Sound::Playing) menu_bg.stop();
 						rc = game->run(window);
 						delete game;
 						game = nullptr;
 						if (rc == EXIT) return rc;
-						if (rc == MENU) status = MENU_STATUS::EXIT_FROM_GAME;
+						if (rc == MENU) {
+							title.play();
+							status = MENU_STATUS::EXIT_FROM_GAME;
+						}
 					}
 					loading_text.setString(loadingStr[loadingTextIdx]);
 					loadingRate = 0;

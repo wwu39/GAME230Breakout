@@ -14,7 +14,7 @@
 #define BALL_RATE 5
 #define BALL_R 30
 #define BALL_CR 12
-#define BALL_SPEED 7.5f
+#define BALL_SPEED 5.0f
 
 using namespace sf;
 
@@ -37,6 +37,7 @@ class Ball
 	void bullet_animate();
 	void exp_animate();
 public:
+	static float speed_mult;
 	BallStatus status = UNLAUNCHED;
 	ExplosionStatus exp_status = NO_EXP;
 	Ball();

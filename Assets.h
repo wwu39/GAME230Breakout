@@ -15,7 +15,7 @@
 #define RED 1
 #define BLUE 2
 #define GREEN 3
-#define EXP_RATE 3
+#define EXP_RATE 5
 
 using namespace sf;
 
@@ -44,6 +44,15 @@ public:
 	static SoundBuffer explosion;
 	static SoundBuffer gameover;
 	static SoundBuffer option;
+	static SoundBuffer title;
+	static SoundBuffer shield_nullify;
+	static Sound nullify;
+	static SoundBuffer win_level;
+	static SoundBuffer level_bg[5];
+	static SoundBuffer losing;
+	static SoundBuffer menu_bg;
+	static SoundBuffer button;
+	static Sound button_press;
 
 	static void loadAssets();
 };

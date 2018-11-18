@@ -3,6 +3,7 @@
 Brick::Brick(int shieldLV, Vector2f pos)
 {
 	this->shieldLV = shieldLV;
+	score = 3 * (shieldLV + 1);
 	plane.setSize({ BRICK_W, BRICK_H });
 	plane.setOrigin({ BRICK_W / 2.0f, BRICK_H / 2.0f });
 	plane.setTexture(&Assets::plane[0]);
@@ -14,9 +15,11 @@ Brick::Brick(int shieldLV, Vector2f pos)
 	RAND_IDLE_DELAY = (32 + rand() % 16) * IDLE_RATE;
 	woddle_up = 1 + rand() % 5;
 	woddle_down = rand() % 5 - 5;
-	expl.setSize({ 120, 134 });
-	expl.setOrigin({ 60, 67 });
-	expl.setTexture(&Assets::explode_tex[0]);
+	for (int i = 0; i < 4; ++i) {
+		expl[i].setSize({ 120, 134 });
+		expl[i].setOrigin({ 60, 67 });
+		expl[i].setTexture(&Assets::explode_tex[0]);
+	}
 	expl_sound.setBuffer(Assets::explosion);
 }
 
@@ -30,27 +33,29 @@ void Brick::shield_flash()
 
 void Brick::exp_animate()
 {
-	switch (exp_status)
-	{
-	case NO_EXP: {
+	for (int i = 0; i < 4; ++i) {
+		switch (exp_status[i])
+		{
+		case NO_EXP: {
 
-	}
-				 break;
-	case EXPL: {
-		expl.setTexture(&Assets::explode_tex[expl_fr]);
-		++expl_fr;
-		if (expl_fr == 34) {
-			exp_status = NO_EXP;
-			if (status == DYING) status = DEAD;
-			expl_fr = 0;
-			expl.setTexture(&Assets::explode_tex[expl_fr]);
 		}
-	}
-			   break;
-	case BLST: {
+					 break;
+		case EXPL: {
+			expl[i].setTexture(&Assets::explode_tex[expl_fr[i]]);
+			++expl_fr[i];
+			if (expl_fr[i] == 34) {
+				exp_status[i] = NO_EXP;
+				if (status == DYING) status = DEAD;
+				expl_fr[i] = 0;
+				expl[i].setTexture(&Assets::explode_tex[expl_fr[i]]);
+			}
+		}
+				   break;
+		case BLST: {
 
-	}
-			   break;
+		}
+				   break;
+		}
 	}
 }
 
@@ -101,13 +106,14 @@ void Brick::draw(RenderWindow& window)
 	}
 	if (status == ALIVE) window.draw(plane);
 	if (shieldLV) window.draw(shield);
-	++exp_rate;
-	if (exp_rate / EXP_RATE) {
-		exp_animate();
-		exp_rate = 0;
+	for (int i = 0; i < 4; ++i) {
+		++exp_rate[i];
+		if (exp_rate[i] / EXP_RATE) {
+			exp_animate();
+			exp_rate[i] = 0;
+		}
+		if (exp_status[i] == EXPL) window.draw(expl[i]);
 	}
-	if (exp_status == EXPL) window.draw(expl);
-	if (exp_status == BLST) window.draw(blst);
 }
 
 void Brick::idle()

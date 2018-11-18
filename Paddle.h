@@ -9,7 +9,7 @@
 
 #define PADDLE_W 132.0f
 #define PADDLE_H 148.0f
-#define PADDLE_SPEED 300
+#define PADDLE_SPEED 500
 #define PADDLE_RATE 5
 
 using namespace sf;

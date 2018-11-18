@@ -27,6 +27,7 @@ protected:
 	RectangleShape shield;
 	int strengh;
 	int shieldLV;
+	int score;
 	int curshfr = 0;
 	int shield_rate = SHIELD_RATE;
 	bool shield_reverse = false;
@@ -42,10 +43,10 @@ protected:
 	int woddle_up;
 	int woddle_down;
 	int woddle_rate = WODDLE_RATE;
-	RectangleShape expl;
+	RectangleShape expl[4];
 	RectangleShape blst;
-	int expl_fr = 0, blst_fr = 0;
-	int exp_rate= EXP_RATE;
+	int expl_fr[4] = { 0 }, blst_fr = 0;
+	int exp_rate[4] = { EXP_RATE };
 	Sound expl_sound, blst_sound;
 	void exp_animate();
 public:
@@ -54,7 +55,8 @@ public:
 	void update_state(float);
 	void draw(RenderWindow&);
 	BrickStatus status = ALIVE;
-	ExplosionStatus exp_status = NO_EXP;
+	ExplosionStatus exp_status[4] = { NO_EXP };
+	friend class Level;
 	friend class Ball;
 	friend class Breakout;
 };
