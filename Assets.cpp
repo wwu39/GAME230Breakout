@@ -33,7 +33,9 @@ SoundBuffer Assets::button;
 Sound Assets::button_press;
 SoundBuffer Assets::under_attack;
 SoundBuffer Assets::critical_damaged;
+SoundBuffer Assets::rail_destroyed;
 SoundBuffer Assets::rail_repair;
+int Assets::expl_idx = 0;
 
 Assets::Assets()
 {
@@ -130,5 +132,6 @@ void Assets::loadAssets()
 	button_press.setBuffer(button);
 	under_attack.loadFromFile("sound/under_attack.wav");
 	critical_damaged.loadFromFile("sound/critical_damage.wav");
+	rail_destroyed.loadFromFile("sound/rail_destroyed.wav");
 	rail_repair.loadFromFile("sound/repair.wav");
 }

@@ -56,7 +56,9 @@ public:
 	static Sound button_press;
 	static SoundBuffer under_attack;
 	static SoundBuffer critical_damaged;
+	static SoundBuffer rail_destroyed;
 	static SoundBuffer rail_repair;
+	static int expl_idx;
 
 	static void loadAssets();
 };

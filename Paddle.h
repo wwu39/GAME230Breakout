@@ -33,6 +33,7 @@ class Paddle
 	Sound rail_repair;
 	Sound under_attack;
 	Sound critical_damaged;
+	Sound rail_destroyed;
 
 	void animate();
 	void fire();

@@ -21,6 +21,7 @@ Brick::Brick(int shieldLV, Vector2f pos)
 		expl[i].setTexture(&Assets::explode_tex[0]);
 	}
 	expl_sound.setBuffer(Assets::explosion);
+	expl_sound.setVolume(50);
 }
 
 void Brick::shield_flash()

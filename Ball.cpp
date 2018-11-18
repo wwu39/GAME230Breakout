@@ -98,10 +98,11 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 						--brick_list[i]->shieldLV;
 					}
 					else if (brick_list[i]->shieldLV < 0) { // invincible
-						brick_list[i]->exp_status[0] = EXPL;
+						brick_list[i]->exp_status[Assets::expl_idx] = EXPL;
 						brick_list[i]->expl_sound.play();
 						Assets::nullify.play();
-						brick_list[i]->expl[0].setPosition(pos);
+						brick_list[i]->expl[Assets::expl_idx].setPosition(pos);
+						Assets::expl_idx = (Assets::expl_idx + 1) % 4;
 					}
 					else { // kill
 						if (brick_list[i]->isMobile()) {
@@ -129,10 +130,11 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 						--brick_list[i]->shieldLV;
 					}
 					else if (brick_list[i]->shieldLV < 0) { // invincible
-						brick_list[i]->exp_status[0] = EXPL;
+						brick_list[i]->exp_status[Assets::expl_idx] = EXPL;
 						brick_list[i]->expl_sound.play();
 						Assets::nullify.play();
-						brick_list[i]->expl[0].setPosition(pos);
+						brick_list[i]->expl[Assets::expl_idx].setPosition(pos);
+						Assets::expl_idx = (Assets::expl_idx + 1) % 4;
 					}
 					else { // kill
 						if (brick_list[i]->isMobile()) {
@@ -175,7 +177,8 @@ void Ball::update_state(float, Paddle& paddle, vector<shared_ptr<Brick>>& brick_
 			paddle.status = START;
 			--paddle.life;
 			if (paddle.life > 2) paddle.under_attack.play();
-			else paddle.critical_damaged.play();
+			else if (paddle.life > 0) paddle.critical_damaged.play();
+			else paddle.rail_destroyed.play();
 		}
 
 		// update position

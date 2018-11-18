@@ -46,6 +46,7 @@ Paddle::Paddle()
 	rail_repair.setBuffer(Assets::rail_repair);
 	under_attack.setBuffer(Assets::under_attack);
 	critical_damaged.setBuffer(Assets::critical_damaged);
+	rail_destroyed.setBuffer(Assets::rail_destroyed);
 }
 
 

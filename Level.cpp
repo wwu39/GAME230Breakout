@@ -53,7 +53,7 @@ Level::Level(int lv)
 	press_any_key.setFont(Assets::font);
 	press_any_key.setCharacterSize(50);
 	press_any_key.setFillColor(Color::Green);
-	press_any_key.setPosition(100, 450);
+	press_any_key.setPosition(100, 425);
 	press_any_key.setString("Press Space to Continue...");
 	fin_score.setFont(Assets::font);
 	fin_score.setCharacterSize(75);
